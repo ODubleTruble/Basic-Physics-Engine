@@ -1,7 +1,7 @@
 import pygame
 
 total_circles_created = 0
-all_circles = {}
+all_circles = []
 
 class circle:
     def __init__(self,
@@ -17,10 +17,10 @@ class circle:
         
         # Increase total circles, assign ID, append to array of all circles.
         global total_circles_created
-        total_circles_created += 1
         self.id = total_circles_created
+        total_circles_created += 1
         global all_circles
-        all_circles[self.id] = self
+        all_circles.append(self)
         
     def __str__(self) -> str:
         returnString = f'<Circle {self.id} = '
@@ -32,8 +32,8 @@ class circle:
         return returnString
     
     def print_all():
-        for id in all_circles:
-            print(all_circles[id])
+        for circ in all_circles:
+            print(circ)
         
     def accelerate(self, gravity_vector: pygame.math.Vector2):
         self.acc = self.acc + gravity_vector
@@ -46,18 +46,37 @@ class circle:
 
 class solver:
     gravity = pygame.Vector2(0, 0.00001)
+    constraint_center = pygame.Vector2(600, 350)
+    constraint_radius = 350
     
     def update(dt: float):
         solver.apply_gravity()
+        solver.apply_constraint()
         solver.update_pos(dt)
     
     def apply_gravity():
-        for id in all_circles:
-            all_circles[id].accelerate(solver.gravity)
+        for circ in all_circles:
+            circ.accelerate(solver.gravity)
     
     def update_pos(dt: float):
-        for id in all_circles:
-            all_circles[id].update_pos(dt)
+        for circ in all_circles:
+            circ.update_pos(dt)
+
+    def apply_constraint():
+        for circ in all_circles:
+            circ_rad = circ.radius
+            circ_pos = circ.curPos
+            dis_to_cent = (circ_pos - solver.constraint_center).length()
+            farthest_point_away = dis_to_cent + circ_rad
+            if (farthest_point_away > solver.constraint_radius):
+                # The distance outside the contraint circle that the circle is.
+                dis_outside = farthest_point_away - solver.constraint_radius
+                # Gets a vector from the circle to the contraint circle's center,
+                # then scales it to be the length of dis_outside
+                move_vec = solver.constraint_center - circ_pos
+                move_vec.scale_to_length(dis_outside)
+                # Moves the circle towards the constraint circle's center. 
+                circ.curPos = circ.curPos + move_vec
 
 
 if __name__ == "__main__":

@@ -22,13 +22,16 @@ def draw(screen):
     # Clears everything on the screen by making it black. 
     screen.fill((0, 0, 0))
     
+    # Display the constraint area.
+    pygame.draw.circle(screen, (100, 100, 100), po.solver.constraint_center, po.solver.constraint_radius)
+    
     # Display each circle. 
-    for id in po.all_circles:
-        color = po.all_circles[id].color
-        center = po.all_circles[id].curPos
-        radius = po.all_circles[id].radius
+    for circ in po.all_circles:
+        color = circ.color
+        center = circ.curPos
+        radius = circ.radius
         pygame.draw.circle(screen, color, center, radius)
-        print(f'Drew {po.all_circles[id]}')
+        print(f'Drew {circ}')
 
     # Updates the display. 
     pygame.display.update()
@@ -37,7 +40,7 @@ def draw(screen):
 def init():
     # Create a few circles. 
     for i in range(1, 4):
-        po.circle(pygame.Vector2(i * 200, 200), radius=i*20)
+        po.circle(pygame.Vector2((i * 140)+400, 200), radius=i*10+10)
     po.circle.print_all()
 
 # Runs the PyGame window.
