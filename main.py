@@ -31,7 +31,6 @@ def draw(screen):
         center = circ.curPos
         radius = circ.radius
         pygame.draw.circle(screen, color, center, radius)
-        print(f'Drew {circ}')
 
     # Updates the display. 
     pygame.display.update()
@@ -39,8 +38,9 @@ def draw(screen):
 
 def init():
     # Create a few circles. 
-    for i in range(1, 4):
-        po.circle(pygame.Vector2((i * 140)+400, 200), radius=i*10+10)
+    for x in range(350, 851, 50):
+        for y in range(200, 401, 50):
+            po.circle(pygame.Vector2(x, y))
     po.circle.print_all()
 
 # Runs the PyGame window.
@@ -49,7 +49,7 @@ def runPyGame():
     
     pygame.init()
     
-    FPS = 60
+    FPS = 500
     fpsClock = pygame.time.Clock()
     
     WINDOW_SIZE = (pygame.display.get_desktop_sizes()[0][0]/1.5, pygame.display.get_desktop_sizes()[0][1]/1.5)

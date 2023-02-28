@@ -7,7 +7,7 @@ class circle:
     def __init__(self,
                  position: pygame.math.Vector2,
                  initial_acceleration: pygame.math.Vector2 = pygame.Vector2(),
-                 radius: float = 50,
+                 radius: float = 20,
                  color = (255, 255, 255)):
         self.curPos = position
         self.oldPos = position
@@ -52,6 +52,7 @@ class solver:
     def update(dt: float):
         solver.apply_gravity()
         solver.apply_constraint()
+        solver.solve_collisions()
         solver.update_pos(dt)
     
     def apply_gravity():
@@ -77,6 +78,24 @@ class solver:
                 move_vec.scale_to_length(dis_outside)
                 # Moves the circle towards the constraint circle's center. 
                 circ.curPos = circ.curPos + move_vec
+    
+    def solve_collisions():
+        for current_id in range(len(all_circles)):
+            circ1 = all_circles[current_id]
+            pos1 = circ1.curPos
+            rad1 = circ1.radius
+            
+            for check_id in range(current_id+1, len(all_circles)):
+                circ2 = all_circles[check_id]
+                pos2 = circ2.curPos
+                rad2 = circ2.radius
+                
+                dis = (pos1 - pos2).length() - rad1 - rad2
+                if (dis < 0):                    
+                    move_vec = pos1 - pos2
+                    move_vec.scale_to_length(dis/2)
+                    all_circles[current_id].curPos = all_circles[current_id].curPos - move_vec
+                    all_circles[check_id].curPos = all_circles[check_id].curPos + move_vec
 
 
 if __name__ == "__main__":
